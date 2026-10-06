@@ -4,10 +4,10 @@ import {
 } from '../config'
 
 // Photo slot: shows the image if one is configured, otherwise a tonal placeholder.
-function Photo({ src, tone = 'sand', label, className = '' }) {
-  if (src) return <img className={`photo ${className}`} src={src} alt={label || ''} loading="lazy" />
+function Photo({ src, tone = 'sand', label, className = '', ...rest }) {
+  if (src) return <img className={`photo ${className}`} src={src} alt={label || ''} loading="lazy" {...rest} />
   return (
-    <div className={`photo ph ${tone} ${className}`} role="img" aria-label={label || 'Photo placeholder'}>
+    <div className={`photo ph ${tone} ${className}`} role="img" aria-label={label || 'Photo placeholder'} {...rest}>
       <svg viewBox="0 0 100 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
         <circle cx="50" cy="34" r="12" />
         <path d="M18 140c0-34 8-62 32-62s32 28 32 62z" />
@@ -62,7 +62,7 @@ export function Catalog() {
   const items = collection.filter((c) => cat === 'All' || c.category === cat)
   return (
     <section id="collection" className="catalog">
-      <div className="cat-head">
+      <div className="cat-head" data-reveal="group">
         <p className="kicker">Ready to be made yours</p>
         <h2>The Collection</h2>
         <p className="lead">Browse our signature pieces, then book a fitting and we’ll cut them to your measurements.</p>
@@ -72,9 +72,9 @@ export function Catalog() {
           ))}
         </div>
       </div>
-      <div className="cards">
-        {items.map((p) => (
-          <a key={p.id} href="#contact" className="product" aria-label={`Book ${p.name}`}>
+      <div className="cards" data-reveal="group">
+        {items.map((p, i) => (
+          <a key={p.id} href="#contact" className="product" style={{ '--i': i }} aria-label={`Book ${p.name}`}>
             <div className="product-img">
               <Photo src={p.image} tone={p.tone} label={p.name} />
               <span className="product-cta">Book this piece</span>
@@ -85,7 +85,7 @@ export function Catalog() {
           </a>
         ))}
         {cat === 'All' && (
-          <a href="#contact" className="product product-custom">
+          <a href="#contact" className="product product-custom" style={{ '--i': items.length }}>
             <h3>Something else in mind?</h3>
             <p>Every piece can be made to order. Tell us what you’re dreaming of.</p>
             <span className="btn-line">Book a consultation</span>
@@ -99,20 +99,20 @@ export function Catalog() {
 export function Editorial({ name }) {
   return (
     <section className="editorial">
-      <Photo src={editorial.image} tone={editorial.tone} label="Studio" className="ed-main" />
-      <div className="ed-text">
+      <Photo src={editorial.image} tone={editorial.tone} label="Studio" className="ed-main" data-reveal="left" />
+      <div className="ed-text" data-reveal="group">
         <p className="kicker">{editorial.kicker}</p>
         <div className="wordmark">{name.toUpperCase()}</div>
         <h2>{editorial.title}</h2>
         <p>{editorial.text}</p>
       </div>
-      <Photo src={editorial.image2} tone={editorial.tone2} label="Detail" className="ed-side" />
+      <Photo src={editorial.image2} tone={editorial.tone2} label="Detail" className="ed-side" data-reveal="right" />
     </section>
   )
 }
 
 const Head = ({ title, text }) => (
-  <div className="head">
+  <div className="head" data-reveal="group">
     <h2 className="caps">{title}</h2>
     {text && <p className="lead">{text}</p>}
   </div>
@@ -122,7 +122,7 @@ export function Services() {
   return (
     <section id="services" className="section">
       <Head title="Services" text="From a quick hem to a full bespoke commission." />
-      <div className="grid three">
+      <div className="grid three" data-reveal="group">
         {services.map((s) => (
           <article key={s.title} className="tile">
             <span className="icon" aria-hidden>{s.icon}</span>
@@ -139,7 +139,7 @@ export function Process() {
   return (
     <section id="process" className="section alt">
       <Head title="How it works" />
-      <ol className="steps">
+      <ol className="steps" data-reveal="group">
         {steps.map((s, i) => (
           <li key={s.title}>
             <span className="num">{String(i + 1).padStart(2, '0')}</span>
@@ -156,7 +156,7 @@ export function Pricing() {
   return (
     <section id="pricing" className="section">
       <Head title="Pricing" text="Fabric is quoted separately at your consultation." />
-      <div className="grid three">
+      <div className="grid three" data-reveal="group">
         {plans.map((p) => (
           <article key={p.name} className={`tile plan ${p.featured ? 'featured' : ''}`}>
             {p.featured && <span className="badge">Most popular</span>}
@@ -176,7 +176,7 @@ export function Testimonials() {
   return (
     <section className="section alt">
       <Head title="Kind words" />
-      <div className="grid three">
+      <div className="grid three" data-reveal="group">
         {testimonials.map((t) => (
           <blockquote key={t.who} className="tile quote">
             <p>“{t.quote}”</p>
@@ -199,13 +199,13 @@ export function Contact() {
     <section id="contact" className="section contact">
       <div>
         <Head title="Book a fitting" text="Tell us what you have in mind and we’ll find a time that suits." />
-        <ul className="info">
+        <ul className="info" data-reveal="up">
           <li>{brand.address}</li>
           <li>{brand.hours}</li>
           <li>{brand.phone}</li>
           <li>{brand.email}</li>
         </ul>
-        <div className="map">
+        <div className="map" data-reveal="up">
           <iframe
             title="Map to our studio"
             loading="lazy"
@@ -217,7 +217,7 @@ export function Contact() {
       {sent ? (
         <div className="tile thanks"><h3>Thank you!</h3><p>We’ll be in touch within one working day.</p></div>
       ) : (
-        <form className="tile form" onSubmit={submit}>
+        <form className="tile form" onSubmit={submit} data-reveal="up">
           <label>Name<input required name="name" autoComplete="name" /></label>
           <label>Email<input required type="email" name="email" autoComplete="email" /></label>
           <label>Service
@@ -235,7 +235,7 @@ export function Contact() {
 export function Newsletter() {
   const [done, setDone] = useState(false)
   return (
-    <section className="newsletter">
+    <section className="newsletter" data-reveal="group">
       <h2>Subscribe to our newsletter for style notes and new fabrics</h2>
       <p>Get <strong>10% off</strong> your first alteration when you sign up.</p>
       {done ? (

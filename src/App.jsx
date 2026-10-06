@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { accents, brand, showPricing } from './config'
 import Customizer from './components/Customizer'
+import useReveal from './useReveal'
 import {
   Nav, Hero, Catalog, Editorial, Services, Process, Pricing, Testimonials, Contact, Newsletter, Footer,
 } from './components/Sections'
@@ -41,6 +42,7 @@ export default function App() {
   const [name, setName] = useState(saved.name || brand.name)
 
   useEffect(notifyVisit, [])
+  useReveal()
 
   useEffect(() => {
     document.documentElement.dataset.theme = mode
