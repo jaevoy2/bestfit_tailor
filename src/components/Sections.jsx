@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
-  brand, hero, categories, collection, editorial, services, steps, plans, testimonials, showPricing, map,
+  brand, hero, categories, collection, galleryImages, editorial, services, steps, plans, testimonials, showPricing, map,
 } from '../config'
 
 // Photo slot: shows the image if one is configured, otherwise a tonal placeholder.
@@ -16,8 +17,9 @@ function Photo({ src, tone = 'sand', label, className = '', ...rest }) {
   )
 }
 
-export function Nav({ name }) {
-  // Transparent over the hero; solid once the page is scrolled.
+export function Nav({ name, solid = false }) {
+  // Transparent over the hero; solid once the page is scrolled (always solid on inner pages).
+  const base = solid ? '/' : ''
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -26,17 +28,17 @@ export function Nav({ name }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   return (
-    <header className={`nav ${scrolled ? 'scrolled' : ''}`}>
+    <header className={`nav ${scrolled || solid ? 'scrolled' : ''}`}>
       <nav className="nav-left">
-        <a href="#collection">Collection</a>
-        <a href="#services">Services</a>
-        <a href="#process">Process</a>
+        <Link to="/gallery">Gallery</Link>
+        <a href={`${base}#services`}>Services</a>
+        <a href={`${base}#process`}>Process</a>
       </nav>
-      <a href="#top" className="logo">{name.toUpperCase()}</a>
+      <Link to="/" className="logo" onClick={() => window.scrollTo(0, 0)}>{name.toUpperCase()}</Link>
       <nav className="nav-right">
-        {showPricing && <a href="#pricing">Pricing</a>}
-        <a href="#contact">Contact</a>
-        <a href="#contact" className="nav-cta">Book a fitting</a>
+        {showPricing && <a href={`${base}#pricing`}>Pricing</a>}
+        <a href={`${base}#contact`}>Contact</a>
+        <a href={`${base}#contact`} className="nav-cta">Book a fitting</a>
       </nav>
     </header>
   )
@@ -63,9 +65,9 @@ export function Catalog() {
   return (
     <section id="collection" className="catalog">
       <div className="cat-head" data-reveal="group">
-        <p className="kicker">Ready to be made yours</p>
-        <h2>The Collection</h2>
-        <p className="lead">Browse our signature pieces, then book a fitting and we’ll cut them to your measurements.</p>
+        <p className="kicker">Our recent work</p>
+        <h2>Gallery</h2>
+        <p className="lead">A selection of gowns, wedding dresses and formalwear made in our studio. See every piece in the full gallery.</p>
         <div className="chips" role="tablist">
           {categories.map((c) => (
             <button key={c} role="tab" aria-selected={c === cat} className={c === cat ? 'on' : ''} onClick={() => setCat(c)}>{c}</button>
@@ -74,15 +76,14 @@ export function Catalog() {
       </div>
       <div className="cards" data-reveal="group">
         {items.map((p, i) => (
-          <a key={p.id} href="#contact" className="product" style={{ '--i': i }} aria-label={`Book ${p.name}`}>
+          <Link key={p.id} to={`/gallery?photo=${p.n}`} className="product" style={{ '--i': i }} aria-label={`View ${p.name} in the gallery`}>
             <div className="product-img">
-              <Photo src={p.image} tone={p.tone} label={p.name} />
-              <span className="product-cta">Book this piece</span>
+              <Photo src={p.image} tone="blush" label={p.name} />
+              <span className="product-cta">View in gallery</span>
             </div>
             <p className="product-cat">{p.category}</p>
             <h3>{p.name}</h3>
-            {showPricing && <p className="product-price">{p.price}</p>}
-          </a>
+          </Link>
         ))}
         {cat === 'All' && (
           <a href="#contact" className="product product-custom" style={{ '--i': items.length }}>
@@ -91,6 +92,9 @@ export function Catalog() {
             <span className="btn-line">Book a consultation</span>
           </a>
         )}
+      </div>
+      <div className="cat-more">
+        <Link to="/gallery" className="btn-dark">View full gallery ({galleryImages.length} photos)</Link>
       </div>
     </section>
   )

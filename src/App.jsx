@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { accents, brand, showPricing } from './config'
 import Customizer from './components/Customizer'
+import GalleryPage from './components/GalleryPage'
 import useReveal from './useReveal'
 import {
   Nav, Hero, Catalog, Editorial, Services, Process, Pricing, Testimonials, Contact, Newsletter, Footer,
@@ -42,7 +44,13 @@ export default function App() {
   const [name, setName] = useState(saved.name || brand.name)
 
   useEffect(notifyVisit, [])
-  useReveal()
+  const { pathname } = useLocation()
+  useReveal(pathname)
+
+  // New page → start at the top (hash links like /#services handle their own scrolling).
+  useEffect(() => {
+    if (!window.location.hash) window.scrollTo(0, 0)
+  }, [pathname])
 
   useEffect(() => {
     document.documentElement.dataset.theme = mode
@@ -57,18 +65,27 @@ export default function App() {
 
   return (
     <>
-      <Nav name={name} />
-      <main>
-        <Hero />
-        <Catalog />
-        <Editorial name={name} />
-        <Services />
-        <Process />
-        {showPricing && <Pricing />}
-        <Testimonials />
-        <Contact />
-        <Newsletter />
-      </main>
+      <Nav name={name} solid={pathname !== '/'} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+          <main>
+            <Hero />
+            <Catalog />
+            <Editorial name={name} />
+            <Services />
+            <Process />
+            {showPricing && <Pricing />}
+            <Testimonials />
+            <Contact />
+            <Newsletter />
+          </main>
+          }
+        />
+        <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       <Footer name={name} />
       <Customizer
         accent={accent} setAccent={setAccent}

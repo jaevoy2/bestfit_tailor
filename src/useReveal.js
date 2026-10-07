@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 // the first time they enter the viewport. "group" staggers the element's children.
 // The hidden start state (.pre) is added here, so with JS off or reduced motion
 // on, everything simply stays visible.
-export default function useReveal() {
+export default function useReveal(routeKey) {
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -32,5 +32,5 @@ export default function useReveal() {
     })
 
     return () => io.disconnect()
-  }, [])
+  }, [routeKey])
 }

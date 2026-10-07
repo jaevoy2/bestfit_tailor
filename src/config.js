@@ -33,17 +33,21 @@ export const hero = [
   { image: '/images/hero-3.jpg', tone: 'cocoa', pos: 'Brown notch-lapel coat' },
 ]
 
-export const categories = ['All', 'Suits', 'Dresses', 'Shirts', 'Coats']
+// Photos from the studio's gallery (public/gallery/01.jpg … 68.jpg).
+export const galleryImages = Array.from({ length: 68 }, (_, i) => `/gallery/${String(i + 1).padStart(2, '0')}.jpg`)
+
+// Home-page gallery preview: a hand-picked selection. `n` is the photo number in /public/gallery.
+export const categories = ['All', 'Wedding', 'Evening', 'Traditional', 'Menswear']
 
 export const collection = [
-  { id: 1, name: 'Plaid suit jacket', category: 'Suits', price: 'from $890', image: '/images/p-suit.jpg', tone: 'stone' },
-  { id: 2, name: 'Evening dress', category: 'Dresses', price: 'from $1,200', image: '/images/p-gown.jpg', tone: 'blush' },
-  { id: 3, name: 'Crisp white shirt', category: 'Shirts', price: 'from $140', image: '/images/p-shirt.jpg', tone: 'sand' },
-  { id: 4, name: 'Wool-cashmere overcoat', category: 'Coats', price: 'from $1,050', image: '/images/p-overcoat.jpg', tone: 'camel' },
-  { id: 5, name: 'Tailored blazer', category: 'Suits', price: 'from $520', image: '/images/p-blazer.jpg', tone: 'cocoa' },
-  { id: 6, name: 'Camel wool coat', category: 'Coats', price: 'from $960', image: '/images/p-coat.jpg', tone: 'camel' },
-  { id: 7, name: 'Trench coat', category: 'Coats', price: 'from $760', image: '/images/p-trench.jpg', tone: 'sand' },
-]
+  { id: 1, n: 8, name: 'Wedding gown with train', category: 'Wedding' },
+  { id: 2, n: 21, name: 'A-line wedding gown', category: 'Wedding' },
+  { id: 3, n: 6, name: 'Beaded evening gown', category: 'Evening' },
+  { id: 4, n: 24, name: 'Blue evening gown', category: 'Evening' },
+  { id: 6, n: 18, name: 'Floral áo dài', category: 'Traditional' },
+  { id: 7, n: 67, name: 'Classic tuxedo', category: 'Menswear' },
+  { id: 8, n: 68, name: 'Shawl-collar tuxedo jacket', category: 'Menswear' },
+].map((p) => ({ ...p, image: galleryImages[p.n - 1] }))
 
 export const editorial = {
   kicker: 'The art of modern elegance',
